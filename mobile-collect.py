@@ -20,6 +20,8 @@ from appium.options.android import UiAutomator2Options
 from selenium.common.exceptions import TimeoutException
 import threading
 
+
+
 device_configs = [
     {
         "device_name": "Pixel 8 - Device 1",
@@ -48,8 +50,11 @@ device_configs = [
     }
 ]
 
+
 vpn_started = {config["udid"]: False for config in device_configs}
 recovering = {config["udid"]: False for config in device_configs}
+
+
 
 def start_mullvad_vpn(udid):
     print(f"Starting Mullvad VPN on device {udid}")
@@ -58,11 +63,17 @@ def start_mullvad_vpn(udid):
     subprocess.run(["adb", "-s", udid, "shell", "input", "tap", "540", "2100"])
     time.sleep(5)
 
+
+
+
 def stop_mullvad_vpn(udid):
     print(f"Disconnecting Mullvad VPN on device {udid}")
     time.sleep(5)
     subprocess.run(["adb", "-s", udid, "shell", "input", "tap", "540", "2100"])
     time.sleep(5)
+
+
+
 
 
 def restart_mullvad_vpn(udid):
@@ -74,9 +85,15 @@ def restart_mullvad_vpn(udid):
     subprocess.run(["adb", "-s", udid, "shell", "input", "tap", "540", "2100"])
 
 
+
+
+
 def create_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+
+
 
 def get_last_completed_iteration(base_dir, total_iterations, device_index):
     for sample in range(1, total_iterations + 1):
@@ -87,6 +104,9 @@ def get_last_completed_iteration(base_dir, total_iterations, device_index):
                 return sample, idx
     return 1, 1
 
+
+
+
 def check_device_completion(base_dir, total_iterations, device_index):
     for sample in range(1, total_iterations + 1):
         for idx in range(1, 51):
@@ -95,6 +115,9 @@ def check_device_completion(base_dir, total_iterations, device_index):
             if not (os.path.exists(pcap_file) and os.path.exists(png_file)):
                 return False
     return True
+
+
+
 
 def open_url_with_timeout(driver, url, timeout=15):
     driver.set_page_load_timeout(timeout)
@@ -106,6 +129,9 @@ def open_url_with_timeout(driver, url, timeout=15):
     except TimeoutException:
         print(f"Failed to open URL: {url} within {timeout} seconds.")
         return False
+
+
+
 
 def check_file_sizes(local_pcap_path, local_screenshot_path):
     try:
@@ -121,6 +147,9 @@ def check_file_sizes(local_pcap_path, local_screenshot_path):
     except Exception as e:
         print(f"Error checking file sizes: {e}")
         return False
+
+
+
 
 def run_script_on_device(config, device_index):
     global vpn_started, recovering
@@ -234,9 +263,11 @@ def run_script_on_device(config, device_index):
                         run_script_on_device(config, device_index)
                         return
 
+    
     print(f"Finished iterations for device {udid}. Disconnecting VPN")
     stop_mullvad_vpn(udid)
     driver.quit()
+
 
 threads = []
 for config in device_configs:
